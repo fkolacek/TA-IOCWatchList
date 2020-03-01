@@ -1,0 +1,134 @@
+<form script="ioc_watchlist.js" stylesheet="ioc_watchlist.css">
+  <label>IOC Watchlist</label>c
+  <search id="updateSearch" depends="$utok_indicator$, $utok_type$, $utok_start$, $utok_end$, $utok_reference$, $utok_reason$, $utok_key$">
+    <query>
+      | inputlookup ioc_watchlist | eval key=_key | WHERE key="$utok_key$"
+      | eval indicator="$utok_indicator$"
+      | eval type="$utok_type$"
+      | eval creator="$env:user$"
+      | eval created=now()
+      | eval start="$utok_start$"
+      | eval end="$utok_end$"
+      | eval reference="$utok_reference$"
+      | eval reason="$utok_reason$"
+      | outputlookup ioc_watchlist append=t
+    </query>
+  </search>
+  <search id="createSearch" depends="$ctok_indicator$, $ctok_type$, $ctok_start$, $ctok_end$, $ctok_reference$, $ctok_reason$">
+    <query>
+      | inputlookup ioc_watchlist
+      | append [stats count
+        | eval indicator="$ctok_indicator$"
+        | eval type="$ctok_type$"
+        | eval creator="$env:user$"
+        | eval created=now()
+        | eval start="$ctok_start$"
+        | eval end="$ctok_end$"
+        | eval reference="$ctok_reference$"
+        | eval reason="$ctok_reason$" ]
+      | table indicator, type, creator, created, start, end, reference, reason
+      | outputlookup ioc_watchlist
+    </query>
+  </search>
+  <search id="deleteSearch" depends="$dtok_key$">
+    <query>
+      | inputlookup ioc_watchlist | eval key=_key | WHERE NOT key="$dtok_key$" | outputlookup ioc_watchlist
+    </query>
+  </search>
+  <fieldset submitButton="false">
+    <input type="text" token="stok_indicator">
+      <label>Indicator</label>
+      <default>*</default>
+    </input>
+    <input type="dropdown" token="stok_type">
+      <label>Type</label>
+      <choice value="*">*</choice>
+      <choice value="ip">IP</choice>
+      <choice value="domain">Domain</choice>
+      <default>*</default>
+    </input>
+    <input type="dropdown" token="stok_creator">
+      <label>Creator</label>
+      <choice value="*">*</choice>
+      <default>*</default>
+      <fieldForLabel>creator</fieldForLabel>
+      <fieldForValue>creator</fieldForValue>
+      <search>
+        <query>| inputlookup ioc_watchlist | dedup creator | table creator</query>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </search>
+    </input>
+  </fieldset>
+  <row>
+    <panel id="IOCPanel">
+      <title>Currently monitored IOCs</title>
+      <table id="IOCTable">
+        <search id="IOCSearch">
+          <query>
+            | inputlookup ioc_watchlist WHERE indicator="$stok_indicator$" type="$stok_type$" creator="$stok_creator$"
+            | rename _key as key
+            | sort -created
+            | table indicator, type, creator, created, start, end, reference, reason, key
+            | convert timeformat="%Y-%m-%d %H:%M:%S" ctime(created)
+            | convert timeformat="%Y-%m-%d %H:%M:%S" ctime(start)
+            | convert timeformat="%Y-%m-%d %H:%M:%S" ctime(end)
+          </query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">100</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+    <panel id="IOCFormPanel">
+      <html>
+        <form>
+          <div>
+          	<label for="tok_uid">Key</label>
+          	<input style="width: 95%" type="text" name="tok_key" readonly="readonly"/>
+          </div>
+          <div>
+          	<label for="tok_indicator">Indicator</label>
+          	<input style="width: 95%" type="text" name="tok_indicator"/>
+          </div>
+          <div>
+          	<label for="tok_type">Type</label>
+          	<select style="width: 95%" name="tok_type" >
+          	  <option value="ip" selected="selected">IP</option>
+          	  <option value="domain">Domain</option>
+          	</select>
+          </div>
+            <div>
+          	<label for="tok_start">Start</label>
+          	<input style="width: 95%" type="date" name="tok_start"/>
+          </div>
+          <div>
+          	<label for="tok_end">End</label>
+          	<input style="width: 95%" type="date" name="tok_end"/>
+          </div>
+          <div>
+          	<label for="tok_reference">Reference</label>
+          	<input style="width: 95%" type="text" name="tok_reference"/>
+          </div>
+          <div>
+          	<label for="tok_reason">Reason</label>
+          	<textarea style="width: 95%" name="tok_reason" rows="5"/>
+          </div>
+          <div>
+            <button id="submitButton">Submit</button>
+            <button id="deleteButton">Delete</button>
+            <button id="clearButton">Clear</button>
+          </div>
+        </form>
+      </html>
+    </panel>
+  </row>
+</form>

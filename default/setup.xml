@@ -1,0 +1,19 @@
+<setup>
+        <block title="IOC Watchlist Configuration">
+        	<text>Documentation: https://github.com/fkolaceek/TA-IOCWatchList</text>
+        </block>
+
+	<block title="Summary Index" endpoint="configs/conf-macros" entity="ioc_watchlist_index">
+                <input field="definition">
+                        <label>Collect changes to IOC watchlist entries into index:</label>
+                        <type>text</type>
+                </input>
+	</block>
+
+	<block title="Summary Sourcetype" endpoint="configs/conf-macros" entity="ioc_watchlist_sourcetype">
+                <input field="definition">
+                        <label>Collect changes to IOC watchlist entries with sourcetype:</label>
+                        <type>text</type>
+                </input>
+	</block>
+</setup>

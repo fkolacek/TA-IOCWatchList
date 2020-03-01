@@ -1,0 +1,11 @@
+#IOCPanel {
+    width: 70% !important;
+}
+
+#IOCTable td:nth-child(9), #IOCTable th:nth-child(9) {
+   display: none
+}
+
+#IOCFormPanel {
+    width: 30% !important;
+}
