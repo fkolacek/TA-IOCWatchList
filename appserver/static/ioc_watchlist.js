@@ -110,7 +110,16 @@ require([
 
   //Initialize form
   $(document).ready(function(){
-    clearForm();
+
+    if(tok_indicator.val() == "$tok_indicator|h$")
+      tok_indicator.val('');
+    tok_type.val('ip');
+    tok_start.val(date2string(start));
+    tok_end.val(date2string(end));
+    if(tok_reference.val() == "$tok_reference|h$")
+      tok_reference.val('');
+    tok_reason.val('');
+    tok_key.val('');
   });
 
   updateSearch.on('search:done', function() {
@@ -126,4 +135,3 @@ require([
     clearForm();
   });
 });
-
