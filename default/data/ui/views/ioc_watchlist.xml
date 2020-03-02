@@ -97,16 +97,9 @@
           </div>
           <div>
           	<label for="tok_indicator">Indicator</label>
-          	<input style="width: 95%" type="text" name="tok_indicator"/>
+          	<input style="width: 95%" type="text" name="tok_indicator" value="$tok_indicator|h$"/>
           </div>
           <div>
-          	<label for="tok_type">Type</label>
-          	<select style="width: 95%" name="tok_type" >
-          	  <option value="ip" selected="selected">IP</option>
-          	  <option value="domain">Domain</option>
-          	</select>
-          </div>
-            <div>
           	<label for="tok_start">Start</label>
           	<input style="width: 95%" type="date" name="tok_start"/>
           </div>
@@ -116,7 +109,7 @@
           </div>
           <div>
           	<label for="tok_reference">Reference</label>
-          	<input style="width: 95%" type="text" name="tok_reference"/>
+          	<input style="width: 95%" type="text" name="tok_reference" value="$tok_reference|h$"/>
           </div>
           <div>
           	<label for="tok_reason">Reason</label>
