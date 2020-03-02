@@ -28,10 +28,29 @@ require([
     return "domain";
   };
 
+  function validateForm(){
+    var result = true;
+
+    for(var i = 0, l = required_fields.length; i < l; i++){
+      if(required_fields[i].val() == ""){
+        required_fields[i].css("border-color", "#FF0000");
+        result = false;
+      }
+      else
+        required_fields[i].css("border-color", "#008000");
+    }
+
+    return result;
+  };
+
   function clearForm(){
     $('form *').filter(':input').each(function(){
         $(this).val('');
     });
+
+    for(var i = 0, l = required_fields.length; i < l; i++)
+      required_fields[i].css("border-color", "#C0BFBF");
+
 
     tok_indicator.val('');
     tok_start.val(date2string(start));
@@ -59,6 +78,8 @@ require([
   var tok_reason = $('[name="tok_reason"]');
   var tok_key = $('[name="tok_key"]')
 
+  var required_fields = [tok_indicator, tok_reference, tok_reason];
+
   $("#IOCTable").delegate('td', 'click', function(e){
     e.preventDefault();
 
@@ -81,6 +102,9 @@ require([
   //Button - Submit
   $(document).on('click', '#submitButton', function(e){
     e.preventDefault();
+
+    if(!validateForm())
+      return;
 
     var s = tok_start.val().replace(/\-/g, '/') + " 00:00:00Z";
     var e = tok_end.val().replace(/\-/g, '/') + " 23:59:59Z";
