@@ -1,5 +1,5 @@
 <form script="ioc_watchlist.js" stylesheet="ioc_watchlist.css">
-  <label>IOC Watchlist</label>c
+  <label>IOC Watchlist</label>
   <search id="updateSearch" depends="$utok_indicator$, $utok_type$, $utok_start$, $utok_end$, $utok_reference$, $utok_reason$, $utok_key$">
     <query>
       | inputlookup ioc_watchlist | eval key=_key | WHERE key="$utok_key$"
@@ -43,9 +43,12 @@
     <input type="dropdown" token="stok_type">
       <label>Type</label>
       <choice value="*">*</choice>
-      <choice value="ip">IP</choice>
-      <choice value="domain">Domain</choice>
       <default>*</default>
+      <fieldForLabel>type</fieldForLabel>
+      <fieldForValue>type</fieldForValue>
+      <search>
+        <query>| inputlookup ioc_watchlist | dedup type | table type</query>
+      </search>
     </input>
     <input type="dropdown" token="stok_creator">
       <label>Creator</label>
