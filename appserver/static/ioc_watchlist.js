@@ -78,7 +78,7 @@ require([
   };
 
   var start = new Date();
-  var end = new Date(); end.setDate(end.getDate()+7);
+  var end = new Date(); end.setDate(end.getDate()+180);
 
   //Splunk Objects
   var tokens = mvc.Components.get('submitted');
