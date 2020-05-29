@@ -35,7 +35,7 @@
       | inputlookup ioc_watchlist | eval key=_key | WHERE NOT key="$dtok_key$" | outputlookup ioc_watchlist
     </query>
   </search>
-  <fieldset submitButton="false">
+  <fieldset submitButton="true" autoRun="false">
     <input type="text" token="stok_indicator">
       <label>Indicator</label>
       <default>*</default>
@@ -62,26 +62,28 @@
         <latest>now</latest>
       </search>
     </input>
+    <input type="text" token="stok_reference" searchWhenChanged="true">
+      <label>Reference</label>
+      <default>*</default>
+    </input>
   </fieldset>
   <row>
     <panel id="IOCPanel">
       <title>Currently monitored IOCs</title>
       <table id="IOCTable">
         <search id="IOCSearch">
-          <query>
-            | inputlookup ioc_watchlist WHERE indicator="$stok_indicator$" type="$stok_type$" creator="$stok_creator$"
+          <query>| inputlookup ioc_watchlist WHERE indicator="$stok_indicator$" type="$stok_type$" creator="$stok_creator$" reference=$stok_reference$
             | rename _key as key
             | sort -created
             | table indicator, type, creator, created, start, end, reference, reason, key
             | convert timeformat="%Y-%m-%d %H:%M:%S" ctime(created)
             | convert timeformat="%Y-%m-%d %H:%M:%S" ctime(start)
-            | convert timeformat="%Y-%m-%d %H:%M:%S" ctime(end)
-          </query>
+            | convert timeformat="%Y-%m-%d %H:%M:%S" ctime(end)</query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
           <sampleRatio>1</sampleRatio>
         </search>
-        <option name="count">100</option>
+        <option name="count">50</option>
         <option name="dataOverlayMode">none</option>
         <option name="drilldown">none</option>
         <option name="percentagesRow">false</option>
