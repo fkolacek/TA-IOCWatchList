@@ -93,7 +93,11 @@
     </panel>
     <panel id="IOCFormPanel">
       <html>
+        <div id="progress"></div>
         <form>
+          <div>
+            <p><a href="ioc_watchlist_bulk_add" class="btn btn-info">Bulk add</a></p>
+          </div>
           <div>
           	<label for="tok_uid">Key</label>
           	<input style="width: 95%" type="text" name="tok_key" readonly="readonly"/>
@@ -140,9 +144,9 @@
           	<textarea style="width: 95%" name="tok_reason" rows="5"/>
           </div>
           <div>
-            <button id="submitButton">Submit</button>
-            <button id="deleteButton">Delete</button>
-            <button id="clearButton">Clear</button>
+            <button id="submitButton" class="btn btn-primary">Submit</button>
+            <button id="deleteButton" class="btn btn-danger">Delete</button>
+            <button id="clearButton" class="btn btn-warning">Clear</button>
           </div>
         </form>
       </html>

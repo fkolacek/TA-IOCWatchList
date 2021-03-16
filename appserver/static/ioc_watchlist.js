@@ -36,6 +36,8 @@ require([
     tok_reference.val('');
     tok_reason.val('');
     tok_key.val('');
+
+    $("#progress").html("");
   };
 
   //Splunk Objects
@@ -123,6 +125,8 @@ require([
     if(!validateForm())
       return;
 
+    $("#progress").append($("<div>").addClass("loading"));
+
     //Create
     if(tok_key.val() == ''){
       console.log("Creating new IOC entry");
@@ -149,6 +153,8 @@ require([
   //Button - Delete
   $(document).on('click', '#deleteButton', function(e){
     e.preventDefault();
+
+    $("#progress").append($("<div>").addClass("loading"));
 
     tokens.set('dtok_key', tok_key.val());
   });
