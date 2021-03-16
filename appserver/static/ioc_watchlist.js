@@ -73,14 +73,14 @@ require([
 
     tok_indicator.val('');
     tok_type.val('ip');
-    tok_start.val(date2string(start));
+    tok_risk.val('2');
     tok_expire.val('12');
     tok_reference.val('');
     tok_reason.val('');
     tok_key.val('');
   };
 
-  var start = new Date();
+  //var start = new Date();
   //var end = new Date(); end.setDate(end.getDate()+180);
 
   //Splunk Objects
@@ -93,13 +93,13 @@ require([
   //Form inputs
   var tok_indicator = $('[name="tok_indicator"]');
   var tok_type = $('[name="tok_type"]');
-  var tok_start = $('[name="tok_start"]');
+  var tok_risk = $('[name="tok_risk"]');
   var tok_expire = $('[name="tok_expire"]');
   var tok_reference = $('[name="tok_reference"]');
   var tok_reason = $('[name="tok_reason"]');
   var tok_key = $('[name="tok_key"]')
 
-  var required_fields = [tok_indicator, tok_type, tok_reference, tok_reason];
+  var required_fields = [tok_indicator, tok_type, tok_risk, tok_expire, tok_reference, tok_reason];
 
   $("#IOCTable").delegate('td', 'click', function(e){
     e.preventDefault();
@@ -114,7 +114,27 @@ require([
 
     tok_indicator.val(values[0]);
     tok_type.val(values[1]);
-    tok_start.val(values[4].replace(/ [0-9\:]+$/, ""));
+
+    var r;
+    switch(values[4]){
+      case "Critical":
+        r="4";
+        break;
+      case "High":
+        r="3";
+        break;
+      case "Medium":
+        r="2";
+        break;
+      case "Low":
+        r="1";
+        break;
+      default:
+        r="0";
+        break;
+    };
+
+    tok_risk.val(r);
 
     var e;
     switch(values[5]){
@@ -135,7 +155,6 @@ require([
         break;
     };
 
-
     tok_expire.val(e);
     tok_reference.val(values[6]);
     tok_reason.val(values[7]);
@@ -149,14 +168,14 @@ require([
     if(!validateForm())
       return;
 
-    var s = tok_start.val().replace(/\-/g, '/') + " 00:00:00Z";
+    //var s = tok_start.val().replace(/\-/g, '/') + " 00:00:00Z";
 
     //Create
     if(tok_key.val() == ''){
       console.log("Creating new IOC entry");
       tokens.set('ctok_indicator', tok_indicator.val());
       tokens.set('ctok_type', tok_type.val());
-      tokens.set('ctok_start', date2epoch(s));
+      tokens.set('ctok_risk', tok_risk.val());
       tokens.set('ctok_expire', tok_expire.val());
       tokens.set('ctok_reference', tok_reference.val());
       tokens.set('ctok_reason', tok_reason.val());
@@ -166,7 +185,7 @@ require([
       console.log("Updating existing IOC entry");
       tokens.set('utok_indicator', tok_indicator.val());
       tokens.set('utok_type', tok_type.val());
-      tokens.set('utok_start', date2epoch(s));
+      tokens.set('utok_risk', tok_risk.val());
       tokens.set('utok_expire', tok_expire.val());
       tokens.set('utok_reference', tok_reference.val());
       tokens.set('utok_reason', tok_reason.val());
@@ -190,10 +209,11 @@ require([
 
   //Initialize form
   $(document).ready(function(){
+    console.log("IOC loaded");
 
     if(tok_indicator.val() == "$tok_indicator|h$")
       tok_indicator.val('');
-    tok_start.val(date2string(start));
+    tok_risk.val('2');
     tok_expire.val('12');
     if(tok_reference.val() == "$tok_reference|h$")
       tok_reference.val('');
