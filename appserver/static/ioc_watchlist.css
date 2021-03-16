@@ -1,14 +1,6 @@
-#IOCPanel {
-    width: 70% !important;
-}
-
-#IOCTable td:nth-child(9), #IOCTable th:nth-child(9) {
-   display: none
-}
-
-#IOCFormPanel {
-    width: 30% !important;
-}
+#IOCPanel { width: 70% !important; }
+#IOCTable td:nth-child(9), #IOCTable th:nth-child(9) { display: none }
+#IOCFormPanel { width: 30% !important; }
 
 .btn-danger{ background-color: #dc3545 !important; border-color: #dc3545 !important; color: #fff !important; }
 .btn-warning{ background-color: #ffc107 !important; border-color: #ffc107 !important; color: #212529 !important; }
