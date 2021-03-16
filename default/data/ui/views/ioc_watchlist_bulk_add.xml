@@ -1,0 +1,77 @@
+<form script="ioc_watchlist_bulk_add.js" stylesheet="ioc_watchlist.css">
+  <label>IOC Watchlist - Bulk add</label>
+  <search id="createSearch" depends="$ctok_indicators$, $ctok_type$, $ctok_risk$, $ctok_expire$, $ctok_reference$, $ctok_reason$">
+  <query>
+    | inputlookup ioc_watchlist
+    | append [stats count
+      | eval indicator="$ctok_indicators$"
+      | eval type="$ctok_type$"
+      | eval creator="$env:user$"
+      | eval created=now()
+      | eval risk="$ctok_risk$"
+      | eval expire="$ctok_expire$"
+      | eval reference="$ctok_reference$"
+      | eval reason="$ctok_reason$"
+      | makemv delim="|" indicator |  mvexpand indicator ]
+    | table indicator, type, creator, created, risk, expire, reference, reason
+    | outputlookup ioc_watchlist
+  </query>
+</search>
+  <row>
+    <panel id="IOCFormPanel">
+      <html>
+        <div id="progress"></div>
+        <form>
+          <div>
+            <p><a href="ioc_watchlist" class="btn btn-info">Go back</a></p>
+          </div>
+          <div>
+            	<label for="tok_type">Type</label>
+              <select style="width: 95%" name="tok_type">
+                <option value="ip">IP address</option>
+                <option value="domain">Domain</option>
+                <option value="url">URL</option>
+                <option value="hash">HASH</option>
+              </select>
+          </div>
+          <div>
+          	<label for="tok_indicator">Indicators</label>
+          	<textarea style="width: 95%" name="tok_indicators" rows="5"/>
+          </div>
+          <div>
+          	<label for="tok_risk">Risk level</label>
+            <select style="width: 95%" name="tok_risk">
+              <option value="0">None</option>
+              <option value="1">Low</option>
+              <option value="2">Medium</option>
+              <option value="3">High</option>
+              <option value="4">Critical</option>
+            </select>
+          </div>
+          <div>
+          	<label for="tok_expire">Expire</label>
+            <select style="width: 95%" name="tok_expire">
+              <option value="3">3 months</option>
+              <option value="6">6 months</option>
+              <option value="9">9 months</option>
+              <option value="12">1 year</option>
+              <option value="0">Never</option>
+            </select>
+          </div>
+          <div>
+          	<label for="tok_reference">Reference</label>
+          	<input style="width: 95%" type="text" name="tok_reference" />
+          </div>
+          <div>
+          	<label for="tok_reason">Reason</label>
+          	<textarea style="width: 95%" name="tok_reason" rows="5"/>
+          </div>
+          <div>
+            <button id="submitButton" class="btn btn-primary">Submit</button>
+            <button id="clearButton" class="btn btn-warning">Clear</button>
+          </div>
+        </form>
+      </html>
+    </panel>
+  </row>
+</form>
