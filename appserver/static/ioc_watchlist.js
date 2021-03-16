@@ -5,48 +5,6 @@ require([
     'splunkjs/mvc/simplexml/ready!'
 ], function(_, $, mvc) {
 
-  function date2string(d){
-    return $.datepicker.formatDate('yy-mm-dd', d);
-  };
-
-  function date2epoch(d) {
-    return Math.round(new Date(d).getTime() / 1000.0);
-  };
-
-  /*
-  function detect_type(t) {
-    //https://stackoverflow.com/questions/5284147/validating-ipv4-addresses-with-regexp
-    var ipv4 = new RegExp('^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$');
-    //https://stackoverflow.com/questions/53497/regular-expression-that-matches-valid-ipv6-addresses
-    var ipv6 = new RegExp('^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$');
-    var hash_md5 = new RegExp('^[a-f0-9]{32}$');
-    var hash_sha1 = new RegExp('^[a-f0-9]{40}$');
-    var hash_sha256 = new RegExp('^[a-f0-9]{64}$');
-    var hash_sha512 = new RegExp('^[a-f0-9]{128}$');
-    //https://stackoverflow.com/questions/10306690/what-is-a-regular-expression-which-will-match-a-valid-domain-name-without-a-subd
-    var domain = new RegExp('^(((?!-))(xn--|_{1,1})?[a-z0-9-]{0,61}[a-z0-9]{1,1}\.)*(xn--)?([a-z0-9][a-z0-9\-]{0,60}|[a-z0-9-]{1,30}\.[a-z]{2,})$');
-    //https://stackoverflow.com/questions/3809401/what-is-a-good-regular-expression-to-match-a-url
-    var url = /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g;
-
-    if(ipv4.test(t))
-      return "ip";
-
-    if(ipv6.test(t))
-      return "ip";
-
-    if(hash_md5.test(t) || hash_sha1.test(t) || hash_sha256.test(t) || hash_sha512.test(t))
-      return "hash";
-
-    if(domain.test(t))
-      return "domain";
-
-    if(url.test(t))
-      return "url";
-
-    return "unknown";
-  };
-  */
-
   function validateForm(){
     var result = true;
 
@@ -79,9 +37,6 @@ require([
     tok_reason.val('');
     tok_key.val('');
   };
-
-  //var start = new Date();
-  //var end = new Date(); end.setDate(end.getDate()+180);
 
   //Splunk Objects
   var tokens = mvc.Components.get('submitted');
@@ -167,8 +122,6 @@ require([
 
     if(!validateForm())
       return;
-
-    //var s = tok_start.val().replace(/\-/g, '/') + " 00:00:00Z";
 
     //Create
     if(tok_key.val() == ''){
