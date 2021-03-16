@@ -1,6 +1,6 @@
 <form script="ioc_watchlist.js" stylesheet="ioc_watchlist.css">
   <label>IOC Watchlist</label>
-  <search id="updateSearch" depends="$utok_indicator$, $utok_type$, $utok_start$, $utok_end$, $utok_reference$, $utok_reason$, $utok_key$">
+  <search id="updateSearch" depends="$utok_indicator$, $utok_type$, $utok_start$, $utok_expire$, $utok_reference$, $utok_reason$, $utok_key$">
     <query>
       | inputlookup ioc_watchlist | eval key=_key | WHERE key="$utok_key$"
       | eval indicator="$utok_indicator$"
@@ -8,13 +8,13 @@
       | eval creator="$env:user$"
       | eval created=now()
       | eval start="$utok_start$"
-      | eval end="$utok_end$"
+      | eval expire="$utok_expire$"
       | eval reference="$utok_reference$"
       | eval reason="$utok_reason$"
       | outputlookup ioc_watchlist append=t
     </query>
   </search>
-  <search id="createSearch" depends="$ctok_indicator$, $ctok_type$, $ctok_start$, $ctok_end$, $ctok_reference$, $ctok_reason$">
+  <search id="createSearch" depends="$ctok_indicator$, $ctok_type$, $ctok_start$, $ctok_expire$, $ctok_reference$, $ctok_reason$">
     <query>
       | inputlookup ioc_watchlist
       | append [stats count
@@ -23,10 +23,10 @@
         | eval creator="$env:user$"
         | eval created=now()
         | eval start="$ctok_start$"
-        | eval end="$ctok_end$"
+        | eval expire="$ctok_expire$"
         | eval reference="$ctok_reference$"
         | eval reason="$ctok_reason$" ]
-      | table indicator, type, creator, created, start, end, reference, reason
+      | table indicator, type, creator, created, start, expire, reference, reason
       | outputlookup ioc_watchlist
     </query>
   </search>
@@ -72,10 +72,10 @@
             | inputlookup ioc_watchlist WHERE indicator="$stok_indicator$" type="$stok_type$" creator="$stok_creator$"
             | rename _key as key
             | sort -created
-            | table indicator, type, creator, created, start, end, reference, reason, key
+            | table indicator, type, creator, created, start, expire, reference, reason, key
             | convert timeformat="%Y-%m-%d %H:%M:%S" ctime(created)
             | convert timeformat="%Y-%m-%d %H:%M:%S" ctime(start)
-            | convert timeformat="%Y-%m-%d %H:%M:%S" ctime(end)
+            | eval expire=case(expire=="3", "3 months", expire=="6", "6 months", expire=="9", "9 months", expire=="12", "1 year", 1==1, "Never")
           </query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
@@ -99,6 +99,15 @@
           	<input style="width: 95%" type="text" name="tok_key" readonly="readonly"/>
           </div>
           <div>
+            	<label for="tok_type">Type</label>
+              <select style="width: 95%" name="tok_type">
+                <option value="ip">IP address</option>
+                <option value="domain">Domain</option>
+                <option value="url">URL</option>
+                <option value="hash">HASH</option>
+              </select>
+          </div>
+          <div>
           	<label for="tok_indicator">Indicator</label>
           	<input style="width: 95%" type="text" name="tok_indicator" value="$tok_indicator|h$"/>
           </div>
@@ -107,8 +116,14 @@
           	<input style="width: 95%" type="date" name="tok_start"/>
           </div>
           <div>
-          	<label for="tok_end">End</label>
-          	<input style="width: 95%" type="date" name="tok_end"/>
+          	<label for="tok_expire">Expire</label>
+            <select style="width: 95%" name="tok_expire">
+              <option value="3">3 months</option>
+              <option value="6">6 months</option>
+              <option value="9">9 months</option>
+              <option value="12">1 year</option>
+              <option value="0">Never</option>
+            </select>
           </div>
           <div>
           	<label for="tok_reference">Reference</label>

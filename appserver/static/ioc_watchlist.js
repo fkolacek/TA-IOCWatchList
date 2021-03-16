@@ -13,6 +13,7 @@ require([
     return Math.round(new Date(d).getTime() / 1000.0);
   };
 
+  /*
   function detect_type(t) {
     //https://stackoverflow.com/questions/5284147/validating-ipv4-addresses-with-regexp
     var ipv4 = new RegExp('^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$');
@@ -44,6 +45,7 @@ require([
 
     return "unknown";
   };
+  */
 
   function validateForm(){
     var result = true;
@@ -70,15 +72,16 @@ require([
 
 
     tok_indicator.val('');
+    tok_type.val('ip');
     tok_start.val(date2string(start));
-    tok_end.val(date2string(end));
+    tok_expire.val('12');
     tok_reference.val('');
     tok_reason.val('');
     tok_key.val('');
   };
 
   var start = new Date();
-  var end = new Date(); end.setDate(end.getDate()+180);
+  //var end = new Date(); end.setDate(end.getDate()+180);
 
   //Splunk Objects
   var tokens = mvc.Components.get('submitted');
@@ -89,13 +92,14 @@ require([
 
   //Form inputs
   var tok_indicator = $('[name="tok_indicator"]');
+  var tok_type = $('[name="tok_type"]');
   var tok_start = $('[name="tok_start"]');
-  var tok_end = $('[name="tok_end"]');
+  var tok_expire = $('[name="tok_expire"]');
   var tok_reference = $('[name="tok_reference"]');
   var tok_reason = $('[name="tok_reason"]');
   var tok_key = $('[name="tok_key"]')
 
-  var required_fields = [tok_indicator, tok_reference, tok_reason];
+  var required_fields = [tok_indicator, tok_type, tok_reference, tok_reason];
 
   $("#IOCTable").delegate('td', 'click', function(e){
     e.preventDefault();
@@ -109,8 +113,30 @@ require([
     });
 
     tok_indicator.val(values[0]);
+    tok_type.val(values[1]);
     tok_start.val(values[4].replace(/ [0-9\:]+$/, ""));
-    tok_end.val(values[5].replace(/ [0-9\:]+$/, ""));
+
+    var e;
+    switch(values[5]){
+      case "3 months":
+        e="3";
+        break;
+      case "6 months":
+        e="6";
+        break;
+      case "9 months":
+        e="9";
+        break;
+      case "1 year":
+        e="12";
+        break;
+      default:
+        e="0";
+        break;
+    };
+
+
+    tok_expire.val(e);
     tok_reference.val(values[6]);
     tok_reason.val(values[7]);
     tok_key.val(values[8]);
@@ -124,24 +150,24 @@ require([
       return;
 
     var s = tok_start.val().replace(/\-/g, '/') + " 00:00:00Z";
-    var e = tok_end.val().replace(/\-/g, '/') + " 23:59:59Z";
-    var t = detect_type(tok_indicator.val());
 
     //Create
     if(tok_key.val() == ''){
+      console.log("Creating new IOC entry");
       tokens.set('ctok_indicator', tok_indicator.val());
-      tokens.set('ctok_type', t);
+      tokens.set('ctok_type', tok_type.val());
       tokens.set('ctok_start', date2epoch(s));
-      tokens.set('ctok_end', date2epoch(e));
+      tokens.set('ctok_expire', tok_expire.val());
       tokens.set('ctok_reference', tok_reference.val());
       tokens.set('ctok_reason', tok_reason.val());
     }
     //Update
     else{
+      console.log("Updating existing IOC entry");
       tokens.set('utok_indicator', tok_indicator.val());
-      tokens.set('utok_type', t);
+      tokens.set('utok_type', tok_type.val());
       tokens.set('utok_start', date2epoch(s));
-      tokens.set('utok_end', date2epoch(e));
+      tokens.set('utok_expire', tok_expire.val());
       tokens.set('utok_reference', tok_reference.val());
       tokens.set('utok_reason', tok_reason.val());
       tokens.set('utok_key', tok_key.val());
@@ -168,7 +194,7 @@ require([
     if(tok_indicator.val() == "$tok_indicator|h$")
       tok_indicator.val('');
     tok_start.val(date2string(start));
-    tok_end.val(date2string(end));
+    tok_expire.val('12');
     if(tok_reference.val() == "$tok_reference|h$")
       tok_reference.val('');
     tok_reason.val('');
