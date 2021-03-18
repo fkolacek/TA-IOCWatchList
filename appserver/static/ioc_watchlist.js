@@ -77,7 +77,7 @@ require([
     }
 
     //Audit
-    tokens.set("atok_action_audit", "1");
+    //tokens.set("atok_action_audit", "1");
   };
 
   /*
@@ -206,18 +206,21 @@ require([
 
   //Set handlers
   updateSearch.on('search:done', function(){
-    clearActionTokens();
+    tokens.set("atok_action_audit", "1");
     iocSearch.startSearch();
     clearForm();
   });
   createSearch.on('search:done', function(){
-    clearActionTokens();
+    tokens.set("atok_action_audit", "1");
     iocSearch.startSearch();
     clearForm();
   });
   deleteSearch.on('search:done', function(){
-    clearActionTokens();
+    tokens.set("atok_action_audit", "1");
     iocSearch.startSearch();
     clearForm();
+  });
+  auditSearch.on('search:done', function(){
+    clearActionTokens();
   });
 });
