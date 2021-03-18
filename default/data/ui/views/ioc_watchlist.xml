@@ -1,38 +1,53 @@
-<form script="ioc_watchlist.js" stylesheet="ioc_watchlist.css">
+<form script="common.js,ioc_watchlist.js" stylesheet="ioc_watchlist.css">
   <label>IOC Watchlist</label>
-  <search id="updateSearch" depends="$utok_indicator$, $utok_type$, $utok_risk$, $utok_expire$, $utok_reference$, $utok_reason$, $utok_key$">
+  <search id="updateSearch" depends="$atok_action_update$, $atok_indicator$, $atok_type$, $atok_risk$, $atok_expire$, $atok_reference$, $atok_reason$, $atok_key$">
     <query>
-      | inputlookup ioc_watchlist | eval key=_key | WHERE key="$utok_key$"
-      | eval indicator="$utok_indicator$"
-      | eval type="$utok_type$"
+      | inputlookup ioc_watchlist | eval key=_key | WHERE key="$atok_key$"
+      | eval indicator="$atok_indicator$"
+      | eval type="$atok_type$"
       | eval creator="$env:user$"
       | eval created=now()
-      | eval risk="$utok_risk$"
-      | eval expire="$utok_expire$"
-      | eval reference="$utok_reference$"
-      | eval reason="$utok_reason$"
+      | eval risk="$atok_risk$"
+      | eval expire="$atok_expire$"
+      | eval reference="$atok_reference$"
+      | eval reason="$atok_reason$"
       | outputlookup ioc_watchlist append=t
     </query>
   </search>
-  <search id="createSearch" depends="$ctok_indicator$, $ctok_type$, $ctok_risk$, $ctok_expire$, $ctok_reference$, $ctok_reason$">
+  <search id="createSearch" depends="$atok_action_create$, $atok_indicator$, $atok_type$, $atok_risk$, $atok_expire$, $atok_reference$, $atok_reason$">
     <query>
       | inputlookup ioc_watchlist
       | append [stats count
-        | eval indicator="$ctok_indicator$"
-        | eval type="$ctok_type$"
+        | eval indicator="$atok_indicator$"
+        | eval type="$atok_type$"
         | eval creator="$env:user$"
         | eval created=now()
-        | eval risk="$ctok_risk$"
-        | eval expire="$ctok_expire$"
-        | eval reference="$ctok_reference$"
-        | eval reason="$ctok_reason$" ]
+        | eval risk="$atok_risk$"
+        | eval expire="$atok_expire$"
+        | eval reference="$atok_reference$"
+        | eval reason="$atok_reason$" ]
       | table indicator, type, creator, created, risk, expire, reference, reason
       | outputlookup ioc_watchlist
     </query>
   </search>
-  <search id="deleteSearch" depends="$dtok_key$">
+  <search id="deleteSearch" depends="$atok_action_delete$, $atok_key$">
     <query>
-      | inputlookup ioc_watchlist | eval key=_key | WHERE NOT key="$dtok_key$" | outputlookup ioc_watchlist
+      | inputlookup ioc_watchlist | eval key=_key | WHERE NOT key="$atok_key$" | outputlookup ioc_watchlist
+    </query>
+  </search>
+  <search id="auditSearch" depends="$atok_action_audit$, $atok_action$, $atok_indicator$, $atok_type$, $atok_risk$, $atok_expire$, $atok_reference$, $atok_reason$">
+    <query>
+    | makeresults
+    | eval _time=now()
+    | eval action="$atok_action$"
+    | eval user="$env:user$"
+    | eval indicator="$atok_indicator$"
+    | eval type="$atok_type$"
+    | eval risk="$atok_risk$"
+    | eval expire="$atok_expire$"
+    | eval reference="$atok_reference$"
+    | eval reason="$atok_reason$"
+    | collect index=`ioc_watchlist_index` source="ioc_watchlist" sourcetype=`ioc_watchlist_sourcetype`
     </query>
   </search>
   <fieldset submitButton="false">
