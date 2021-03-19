@@ -50,7 +50,7 @@
     | collect index=`ioc_watchlist_index` source="ioc_watchlist" sourcetype=`ioc_watchlist_sourcetype`
     </query>
   </search>
-  <fieldset submitButton="false">
+  <fieldset submitButton="true" autoRun="false">
     <input type="text" token="stok_indicator">
       <label>Indicator</label>
       <default>*</default>
@@ -77,6 +77,10 @@
         <latest>now</latest>
       </search>
     </input>
+    <input type="text" token="stok_reference" searchWhenChanged="true">
+      <label>Reference</label>
+      <default>*</default>
+    </input>
   </fieldset>
   <row>
     <panel id="IOCPanel">
@@ -84,7 +88,7 @@
       <table id="IOCTable">
         <search id="IOCSearch">
           <query>
-            | inputlookup ioc_watchlist WHERE indicator="$stok_indicator$" type="$stok_type$" creator="$stok_creator$"
+            | inputlookup ioc_watchlist WHERE indicator="$stok_indicator$" type="$stok_type$" creator="$stok_creator$" reference=$stok_reference$
             | rename _key as key
             | sort -created
             | table indicator, type, creator, created, risk, expire, reference, reason, key
@@ -96,7 +100,7 @@
           <latest>now</latest>
           <sampleRatio>1</sampleRatio>
         </search>
-        <option name="count">100</option>
+        <option name="count">50</option>
         <option name="dataOverlayMode">none</option>
         <option name="drilldown">none</option>
         <option name="percentagesRow">false</option>
