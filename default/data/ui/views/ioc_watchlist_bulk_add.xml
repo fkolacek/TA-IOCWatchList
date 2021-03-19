@@ -1,20 +1,36 @@
-<form script="ioc_watchlist_bulk_add.js" stylesheet="ioc_watchlist.css">
+<form script="common.js,ioc_watchlist_bulk_add.js" stylesheet="ioc_watchlist.css">
   <label>IOC Watchlist - Bulk add</label>
-  <search id="createSearch" depends="$ctok_indicators$, $ctok_type$, $ctok_risk$, $ctok_expire$, $ctok_reference$, $ctok_reason$">
+  <search id="createSearch" depends="$atok_indicators$, $atok_type$, $atok_risk$, $atok_expire$, $atok_reference$, $atok_reason$">
   <query>
     | inputlookup ioc_watchlist
     | append [stats count
-      | eval indicator="$ctok_indicators$"
-      | eval type="$ctok_type$"
+      | eval indicator="$atok_indicators$"
+      | eval type="$atok_type$"
       | eval creator="$env:user$"
       | eval created=now()
-      | eval risk="$ctok_risk$"
-      | eval expire="$ctok_expire$"
-      | eval reference="$ctok_reference$"
-      | eval reason="$ctok_reason$"
+      | eval risk="$atok_risk$"
+      | eval expire="$atok_expire$"
+      | eval reference="$atok_reference$"
+      | eval reason="$atok_reason$"
       | makemv delim="|" indicator |  mvexpand indicator ]
     | table indicator, type, creator, created, risk, expire, reference, reason
     | outputlookup ioc_watchlist
+  </query>
+</search>
+<search id="auditSearch" depends="$atok_action_audit$, $atok_indicators$, $atok_type$, $atok_risk$, $atok_expire$, $atok_reference$, $atok_reason$">
+  <query>
+  | makeresults
+  | eval _time=now()
+  | eval action="create"
+  | eval user="$env:user$"
+  | eval indicator="$atok_indicators$"
+  | eval type="$atok_type$"
+  | eval risk="$atok_risk$"
+  | eval expire="$atok_expire$"
+  | eval reference="$atok_reference$"
+  | eval reason="$atok_reason$"
+  | makemv delim="|" indicator |  mvexpand indicator
+  | collect index=`ioc_watchlist_index` source="ioc_watchlist" sourcetype=`ioc_watchlist_sourcetype`
   </query>
 </search>
   <row>
@@ -24,6 +40,7 @@
         <form>
           <div>
             <p><a href="ioc_watchlist" class="btn btn-info">Go back</a></p>
+            <p class="box-success">Successfully added</p>
           </div>
           <div>
             	<label for="tok_type">Type</label>

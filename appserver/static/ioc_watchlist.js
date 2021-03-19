@@ -24,7 +24,6 @@ require([
 
   var required_fields = [tok_indicator, tok_type, tok_risk, tok_expire, tok_reference, tok_reason];
 
-
   /*
     Validate form before submitting
   */
@@ -204,7 +203,9 @@ require([
     tok_key.val('');
   });
 
-  //Set handlers
+  /*
+    Set handlers
+  */
   updateSearch.on('search:done', function(){
     tokens.set("atok_action_audit", "1");
     iocSearch.startSearch();
