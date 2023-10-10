@@ -49,6 +49,7 @@
                 <option value="domain">Domain</option>
                 <option value="url">URL</option>
                 <option value="hash">HASH</option>
+                <option value="email">E-mail</option>
               </select>
           </div>
           <div>
@@ -68,6 +69,7 @@
           <div>
           	<label for="tok_expire">Expire</label>
             <select style="width: 95%" name="tok_expire">
+              <option value="1">1 month</option>
               <option value="3">3 months</option>
               <option value="6">6 months</option>
               <option value="9">9 months</option>

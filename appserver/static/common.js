@@ -28,6 +28,9 @@ function get_expiration(expiration){
   var e;
 
   switch(expiration){
+    case "1 month":
+      e="1";
+      break;
     case "3 months":
       e="3";
       break;
