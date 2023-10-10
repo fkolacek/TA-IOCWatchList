@@ -1,4 +1,4 @@
-<form script="common.js,ioc_watchlist.js" stylesheet="ioc_watchlist.css">
+<form version="1.1" script="common.js,ioc_watchlist.js" stylesheet="ioc_watchlist.css">
   <label>IOC Watchlist</label>
   <search id="updateSearch" depends="$atok_action_update$, $atok_indicator$, $atok_type$, $atok_risk$, $atok_expire$, $atok_reference$, $atok_reason$, $atok_key$">
     <query>
